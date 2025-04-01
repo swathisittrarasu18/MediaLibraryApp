@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class MediaDetailViewModel(
     private val localMediaRepository: LocalMediaRepository,
     private val remoteMediaRepository: RemoteMediaRepository,
-    private val storageManager: StorageManager1 // Handles file downloads
+    private val storageManager: StorageManager1
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MediaDetailState())
