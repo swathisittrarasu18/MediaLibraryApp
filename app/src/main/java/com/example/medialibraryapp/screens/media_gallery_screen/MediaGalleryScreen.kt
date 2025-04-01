@@ -7,11 +7,14 @@ import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -31,13 +34,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.data.local.room.entities.MediaEntity
+import com.example.medialibraryapp.R
 import com.example.medialibraryapp.screens.media_detail_screen.getFileSizeInKB
+import com.example.medialibraryapp.ui.theme.extensions.appBarColor
+import com.example.medialibraryapp.ui.theme.extensions.appBarTitleColor
 import com.example.medialibraryapp.ui.theme.extensions.imageDescriptionTextColor
 import com.example.medialibraryapp.utils.composes.DeviceUtils.isTablet
 import org.koin.androidx.compose.koinViewModel
@@ -101,9 +110,32 @@ private fun MediaGalleryScreenDesign(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (state.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        } else {
+
+        Column {
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(appBarColor),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    text = stringResource(R.string.media_gallery),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = appBarTitleColor,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .weight(1F)
+                        .padding(start = 12.dp)
+                )
+            }
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(columns),
                 modifier = Modifier.fillMaxSize()
@@ -135,6 +167,7 @@ private fun MediaGalleryScreenDesign(
                         }
                     }
                 }
+
             }
         }
 
@@ -144,7 +177,7 @@ private fun MediaGalleryScreenDesign(
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
             shape = CircleShape,
-            containerColor = Color.Blue
+            containerColor = appBarColor
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.White)
         }

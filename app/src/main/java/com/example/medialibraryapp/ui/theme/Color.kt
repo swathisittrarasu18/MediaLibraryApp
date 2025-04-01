@@ -16,6 +16,8 @@ val hyperlinkTextColorDark = Color(0xFFB961E7)
 val imageDescriptionTextDark = Color(0xFFFFFFFF)
 
 val backgroundColorDark = Color(0xFF141318)
+val appBarColorDark = Color(0xFF4B0072)
+val appBarTitleColorDark = Color(0xFFF7F6F8)
 
 
 //Light mode start
@@ -32,6 +34,8 @@ val headingTextColorLight = Color(0xFF220531)
 val hyperlinkTextColorLight = Color(0xFF4B0072)
 val imageDescriptionTextLight = Color(0xFF220531)
 val backgroundColorLight = Color(0xFFFFFFFF)
+val appBarColorLight = Color(0xFF4B0072)
+val appBarTitleColorLight = Color(0xFFF7F6F8)
 
 
 //Snack bar color
