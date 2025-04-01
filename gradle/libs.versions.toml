@@ -13,6 +13,7 @@ composeBom = "2024.09.00"
 appcompat = "1.7.0"
 material = "1.12.0"
 koin = "3.5.6"
+media3Exoplayer = "1.6.0"
 navigationCompose = "2.8.9"
 viewmodel = "2.8.7"
 lifecycle-extensions = "2.2.0"
@@ -25,6 +26,8 @@ coil = "2.7.0"
 [libraries]
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Exoplayer" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }

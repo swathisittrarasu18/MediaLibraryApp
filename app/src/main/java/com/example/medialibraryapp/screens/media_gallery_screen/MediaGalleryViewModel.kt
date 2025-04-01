@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.local.room.repositories.LocalMediaRepository
 import com.example.data.remote.respositories.RemoteMediaRepository
+import com.example.medialibraryapp.utils.composes.snackbar.showSnack
+import com.example.medialibraryapp.utils.enums.SnackBarType
+import com.example.medialibraryapp.utils.validations.MEDIA_UPLOADED_SUCCESSFULLY
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -60,6 +63,10 @@ class MediaGalleryViewModel(
         viewModelScope.launch {
             remoteRepository.uploadMedia(uri, fileName, type, size)
             loadMediaFromLocal()
+            showSnack(
+                message = MEDIA_UPLOADED_SUCCESSFULLY,
+                snackBarType = SnackBarType.SUCCESS
+            )
         }
         updateProgress(false)
     }
