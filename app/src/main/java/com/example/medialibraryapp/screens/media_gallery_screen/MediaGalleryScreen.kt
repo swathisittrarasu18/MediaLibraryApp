@@ -77,9 +77,8 @@ private fun MediaGalleryScreenDesign(
     onMediaClick: (MediaEntity) -> Unit
 ) {
 
-    val columns = if (isTablet()) 4 else 2 // More columns for tablets
-    val imageSize = if (isTablet()) 180.dp else 120.dp // Larger images for tablets
-    val fabSize = if (isTablet()) 72.dp else 56.dp // Larger FAB for tablets
+    val columns = if (isTablet()) 4 else 2
+    val imageSize = if (isTablet()) 180.dp else 120.dp
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(PickVisualMedia()) { uri: Uri? ->
         uri?.let {
@@ -168,16 +167,6 @@ fun getFileName(context: Context, uri: Uri): String? {
     return fileName
 }
 
-fun getFileSize(context: Context, uri: Uri): Long? {
-    return context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-        val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
-        if (sizeIndex != -1 && cursor.moveToFirst()) {
-            cursor.getLong(sizeIndex)
-        } else {
-            null
-        }
-    }
-}
 
 
 
