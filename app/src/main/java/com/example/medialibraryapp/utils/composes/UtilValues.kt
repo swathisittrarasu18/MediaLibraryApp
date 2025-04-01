@@ -1,27 +1,23 @@
 package com.example.medialibraryapp.utils.composes
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalConfiguration
+import com.example.medialibraryapp.utils.composes.DeviceUtils.isTablet
+
+
+object DeviceUtils {
+    @Composable
+    fun isTablet(): Boolean {
+        val configuration = LocalConfiguration.current
+        return configuration.screenWidthDp >= 600
+    }
+}
 
 
 @Composable
-fun ProgressBarCompose(isShowProgress: Boolean) {
-    if (isShowProgress) {
-        LocalFocusManager.current.clearFocus()
-        LocalSoftwareKeyboardController.current?.hide()
+fun Modifier.fillWidth(widthFraction: Float = 0.3f): Modifier =
+    if (isTablet()) fillMaxWidth(widthFraction) else fillMaxWidth()
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize(), // Semi-transparent background
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    }
-}
+

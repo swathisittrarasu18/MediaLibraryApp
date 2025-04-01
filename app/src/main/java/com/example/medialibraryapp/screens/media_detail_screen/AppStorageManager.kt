@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.core.net.toUri
 
 
-class StorageManager1(private val context: Context) {
+class AppStorageManager(private val context: Context) {
 
     fun downloadFile(fileUrl: String, fileName: String): Boolean {
         if (fileUrl.isEmpty()) {

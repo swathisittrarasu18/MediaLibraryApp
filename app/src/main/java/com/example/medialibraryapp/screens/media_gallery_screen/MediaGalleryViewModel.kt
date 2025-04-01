@@ -27,7 +27,12 @@ class MediaGalleryViewModel(
 
     fun onEvent(event: MediaGalleryEvent) {
         when (event) {
-            is MediaGalleryEvent.UploadMedia -> uploadMedia(event.uri, event.fileName, event.type)
+            is MediaGalleryEvent.UploadMedia -> uploadMedia(
+                event.uri,
+                event.fileName,
+                event.type,
+                event.size
+            )
         }
     }
 
@@ -49,18 +54,12 @@ class MediaGalleryViewModel(
         }
     }
 
-//    private fun deleteMedia(mediaId: String) {
-//        viewModelScope.launch {
-//            repository.deleteMedia(mediaId)
-//            loadMedia()
-//        }
-//    }
 
-    private fun uploadMedia(uri: Uri, fileName: String, type: String) {
+    private fun uploadMedia(uri: Uri, fileName: String, type: String, size: Long) {
         updateProgress(true)
         viewModelScope.launch {
-            remoteRepository.uploadMedia(uri, fileName, type)
-            loadMediaFromLocal() // Refresh media gallery after upload
+            remoteRepository.uploadMedia(uri, fileName, type, size)
+            loadMediaFromLocal()
         }
         updateProgress(false)
     }

@@ -13,6 +13,9 @@ val tertiaryDark = Color(0xFFF7F6F8)
 
 val headingTextColorDark = Color(0xFFF7F6F8)
 val hyperlinkTextColorDark = Color(0xFFB961E7)
+val imageDescriptionTextDark = Color(0xFFFFFFFF)
+
+val backgroundColorDark = Color(0xFF141318)
 
 
 //Light mode start
@@ -27,6 +30,8 @@ val tertiaryLight = Color(0xFF220531)
 
 val headingTextColorLight = Color(0xFF220531)
 val hyperlinkTextColorLight = Color(0xFF4B0072)
+val imageDescriptionTextLight = Color(0xFF220531)
+val backgroundColorLight = Color(0xFFFFFFFF)
 
 
 //Snack bar color

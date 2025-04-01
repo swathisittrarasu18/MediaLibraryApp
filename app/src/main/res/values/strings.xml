@@ -9,4 +9,9 @@
     <string name="already_have_an_account_sign_in">Already have an account? Sign In</string>
     <string name="empty" />
     <string name="upload">Upload</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm_deletion">Confirm Deletion</string>
+    <string name="are_you_sure_you_want_to_delete_this_item">Are you sure you want to delete this item?</string>
+    <string name="delete">Delete</string>
+    <string name="download">Download</string>
 </resources>

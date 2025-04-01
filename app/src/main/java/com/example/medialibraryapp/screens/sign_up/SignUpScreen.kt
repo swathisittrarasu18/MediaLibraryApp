@@ -1,5 +1,7 @@
 package com.example.medialibraryapp.screens.sign_up
 
+import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,13 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.medialibraryapp.R
 import com.example.medialibraryapp.screens.sign_in.ErrorMessageText
+import com.example.medialibraryapp.ui.theme.extensions.backgroundColor
 import com.example.medialibraryapp.ui.theme.extensions.headingTextLarge
-import com.example.medialibraryapp.utils.composes.ProgressBarCompose
+import com.example.medialibraryapp.utils.composes.fillWidth
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -40,7 +44,7 @@ fun SignUpScreen(
     val state by viewModel.signUpState.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
 
-    SignUpMobileScreenDesign(
+    SignUpScreenDesign(
         state = state,
         onEvent = onEvent,
         onNavigateTo = onNavigateTo,
@@ -49,10 +53,18 @@ fun SignUpScreen(
 
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showSystemUi = true, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true, showBackground = true)
+@Preview(device = Devices.PIXEL_TABLET, showSystemUi = true, showBackground = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    device = Devices.PIXEL_TABLET,
+    showSystemUi = true,
+    showBackground = true
+)
 @Composable
 private fun SignUpScreenDesignPreview() {
-    SignUpMobileScreenDesign(
+    SignUpScreenDesign(
         state = SignUpState(),
         onEvent = {},
         onNavigateTo = {},
@@ -61,7 +73,7 @@ private fun SignUpScreenDesignPreview() {
 }
 
 @Composable
-private fun SignUpMobileScreenDesign(
+private fun SignUpScreenDesign(
     state: SignUpState,
     onEvent: (SignUpEvent) -> Unit,
     onNavigateTo: () -> Unit,
@@ -72,7 +84,10 @@ private fun SignUpMobileScreenDesign(
     var isInitial by remember { mutableStateOf(true) }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+            .background(backgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -89,7 +104,7 @@ private fun SignUpMobileScreenDesign(
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillWidth(0.3f)
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),

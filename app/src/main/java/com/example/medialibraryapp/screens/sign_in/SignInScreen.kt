@@ -1,7 +1,9 @@
 package com.example.medialibraryapp.screens.sign_in
 
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -30,7 +33,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.extensions.isValidString
 import com.example.data.extensions.validateString
 import com.example.medialibraryapp.R
+import com.example.medialibraryapp.ui.theme.extensions.backgroundColor
 import com.example.medialibraryapp.ui.theme.extensions.headingTextLarge
+import com.example.medialibraryapp.utils.composes.fillWidth
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -44,7 +49,7 @@ fun SignInScreen(
     val state by viewModel.signInState.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
 
-    SignInMobileScreenDesign(
+    SignInScreenDesign(
         state = state,
         onEvent = onEvent,
         onNavigateTo = onNavigateTo,
@@ -55,10 +60,18 @@ fun SignInScreen(
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showSystemUi = true, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true, showBackground = true)
+@Preview(device = Devices.PIXEL_TABLET, showSystemUi = true, showBackground = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    device = Devices.PIXEL_TABLET,
+    showSystemUi = true,
+    showBackground = true
+)
 @Composable
 private fun SignInScreenDesignPreview() {
-    SignInMobileScreenDesign(
+    SignInScreenDesign(
         state = SignInState(),
         onEvent = {},
         onNavigateTo = {},
@@ -67,7 +80,7 @@ private fun SignInScreenDesignPreview() {
 }
 
 @Composable
-private fun SignInMobileScreenDesign(
+private fun SignInScreenDesign(
     state: SignInState,
     onEvent: (SignInEvent) -> Unit,
     onNavigateTo: () -> Unit,
@@ -80,7 +93,8 @@ private fun SignInMobileScreenDesign(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(20.dp)
+            .background(backgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -88,7 +102,7 @@ private fun SignInMobileScreenDesign(
         if (state.isShowProgress) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize(), // Semi-transparent background
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
@@ -97,7 +111,7 @@ private fun SignInMobileScreenDesign(
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillWidth(0.3f)
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),

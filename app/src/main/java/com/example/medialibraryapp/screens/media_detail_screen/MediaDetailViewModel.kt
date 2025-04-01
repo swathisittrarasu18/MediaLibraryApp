@@ -10,12 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MediaDetailViewModel(
     private val localMediaRepository: LocalMediaRepository,
     private val remoteMediaRepository: RemoteMediaRepository,
-    private val storageManager: StorageManager1
+    private val storageManager: AppStorageManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MediaDetailState())
@@ -26,6 +27,7 @@ class MediaDetailViewModel(
             is MediaDetailEvent.LoadMedia -> loadMedia(event.mediaId)
             MediaDetailEvent.DownloadMedia -> downloadMedia()
             MediaDetailEvent.DeleteMedia -> deleteMedia()
+            is MediaDetailEvent.DismissConfirmationDialog -> showDeleteDialog(event.isShow)
         }
     }
 
@@ -63,6 +65,14 @@ class MediaDetailViewModel(
                     _state.value = _state.value.copy(error = "Failed to delete media")
                 }
             }
+        }
+    }
+
+    private fun showDeleteDialog(show: Boolean) {
+        _state.update {
+            it.copy(
+                isShowDeleteConfirmationDialog = show,
+            )
         }
     }
 }

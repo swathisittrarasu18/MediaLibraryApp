@@ -5,8 +5,10 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,9 +17,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,13 +31,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.data.local.room.entities.MediaEntity
-import com.example.medialibraryapp.R
+import com.example.medialibraryapp.screens.media_detail_screen.getFileSizeInKB
+import com.example.medialibraryapp.ui.theme.extensions.imageDescriptionTextColor
+import com.example.medialibraryapp.utils.composes.DeviceUtils.isTablet
 import org.koin.androidx.compose.koinViewModel
 import java.util.UUID
 
@@ -70,15 +77,17 @@ private fun MediaGalleryScreenDesign(
     onMediaClick: (MediaEntity) -> Unit
 ) {
 
+    val columns = if (isTablet()) 4 else 2 // More columns for tablets
+    val imageSize = if (isTablet()) 180.dp else 120.dp // Larger images for tablets
+    val fabSize = if (isTablet()) 72.dp else 56.dp // Larger FAB for tablets
     val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+    val launcher = rememberLauncherForActivityResult(PickVisualMedia()) { uri: Uri? ->
         uri?.let {
             val contentResolver = context.contentResolver
             val type = contentResolver.getType(it) ?: "unknown"
             val fileName = getFileName(context, it) ?: UUID.randomUUID().toString()
-            onEvent(MediaGalleryEvent.UploadMedia(it, fileName, type))
+            val fileSize = getFileSizeInKB(context, it) ?: 0L
+            onEvent(MediaGalleryEvent.UploadMedia(it, fileName, type, fileSize))
         }
     }
 
@@ -96,7 +105,10 @@ private fun MediaGalleryScreenDesign(
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
-            LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxSize()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(columns),
+                modifier = Modifier.fillMaxSize()
+            ) {
                 items(state.mediaList.size) { index ->
                     val media = state.mediaList[index]
                     Card(
@@ -104,13 +116,23 @@ private fun MediaGalleryScreenDesign(
                             .padding(8.dp)
                             .clickable { onMediaClick(media) }
                     ) {
-                        Column {
+                        Column(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
                             AsyncImage(
                                 model = media.url,
                                 contentDescription = null,
-                                modifier = Modifier.size(120.dp)
+                                modifier = Modifier.size(imageSize)
                             )
-                            Text(text = media.name, style = MaterialTheme.typography.bodyLarge)
+
+                            Text(
+                                text = media.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = imageDescriptionTextColor,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
                         }
                     }
                 }
@@ -118,15 +140,16 @@ private fun MediaGalleryScreenDesign(
         }
 
         FloatingActionButton(
-            onClick = { launcher.launch("*/*") }, // Allow both images and videos
+            onClick = { launcher.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo)) }, // Allow both images and videos
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
             shape = CircleShape,
             containerColor = Color.Blue
         ) {
-            Text(text = stringResource(R.string.upload), color = Color.White)
+            Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.White)
         }
+
     }
 }
 
@@ -143,6 +166,17 @@ fun getFileName(context: Context, uri: Uri): String? {
         }
     }
     return fileName
+}
+
+fun getFileSize(context: Context, uri: Uri): Long? {
+    return context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+        val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+        if (sizeIndex != -1 && cursor.moveToFirst()) {
+            cursor.getLong(sizeIndex)
+        } else {
+            null
+        }
+    }
 }
 
 

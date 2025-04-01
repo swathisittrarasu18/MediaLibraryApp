@@ -36,17 +36,16 @@ class RemoteMediaRepository(
         }
     }
 
-    suspend fun uploadMedia(uri: Uri, fileName: String, type: String) {
+    suspend fun uploadMedia(uri: Uri, fileName: String, type: String, size: Long) {
         val ref = storage.reference.child("media/$fileName")
         ref.putFile(uri).await()
         val downloadUrl = ref.downloadUrl.await().toString()
-
         val media = MediaEntity(
             id = UUID.randomUUID().toString(),
             name = fileName,
             url = downloadUrl,
             type = type,
-            size = 0L,
+            size = size,
             uploadDate = System.currentTimeMillis()
         )
         firestore.collection("media").document(fileName).set(media).await()

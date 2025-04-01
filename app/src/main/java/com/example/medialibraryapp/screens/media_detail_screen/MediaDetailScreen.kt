@@ -1,5 +1,8 @@
 package com.example.medialibraryapp.screens.media_detail_screen
 
+import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -23,10 +28,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.example.medialibraryapp.R
+import com.example.medialibraryapp.ui.theme.extensions.imageDescriptionTextColor
 import org.koin.androidx.compose.koinViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 fun MediaDetailScreen(
@@ -64,7 +76,11 @@ fun MediaDetailScreenDesign(
         if (state.isDeleted) onBack()
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
         when {
             state.isLoading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -77,7 +93,12 @@ fun MediaDetailScreenDesign(
                         .fillMaxSize()
                         .padding(16.dp)
                 ) {
-                    Text(text = state.media.name, style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        modifier = Modifier.padding(vertical = 10.dp),
+                        text = state.media.name,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = imageDescriptionTextColor
+                    )
 
                     AsyncImage(
                         model = state.media.url,
@@ -91,22 +112,22 @@ fun MediaDetailScreenDesign(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text(text = "Size: ${state.media.size}")
-                    Text(text = "Uploaded on: ${state.media.uploadDate}")
+                    Text(text = "Size: ${state.media.size} KB")
+                    Text(text = "Uploaded on: ${formatTimestamp(state.media.uploadDate)}")
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Button(onClick = { onEvent(MediaDetailEvent.DownloadMedia) }) {
-                            Text("Download")
+                            Text(stringResource(R.string.download))
                         }
 
                         Button(
-                            onClick = { onEvent(MediaDetailEvent.DeleteMedia) },
+                            onClick = { onEvent(MediaDetailEvent.DismissConfirmationDialog(true)) },
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                         ) {
-                            Text("Delete")
+                            Text(stringResource(R.string.delete))
                         }
                     }
                 }
@@ -122,9 +143,42 @@ fun MediaDetailScreenDesign(
             }
         }
     }
+
+    if (state.isShowDeleteConfirmationDialog) {
+        DeleteConfirmationDialog(
+            onClick = { onEvent(MediaDetailEvent.DeleteMedia) },
+            onDismiss = { onEvent(MediaDetailEvent.DismissConfirmationDialog(false)) }
+        )
+    }
+}
+
+fun getFileSizeInKB(context: Context, uri: Uri): Long? {
+    return context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+        val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+        if (sizeIndex != -1 && cursor.moveToFirst()) {
+            convertFileSizeToKB(cursor.getLong(sizeIndex))
+            // Convert bytes to KB
+        } else {
+            null
+        }
+    }
 }
 
 
+private fun convertFileSizeToKB(sizeInBytes: Long): Long {
+    return when {
+        sizeInBytes < 1024 -> 1L  // Minimum 1KB for files <1KB
+        sizeInBytes < 1024 * 1024 -> sizeInBytes / 1024  // KB range
+        sizeInBytes < 1024 * 1024 * 1024 -> (sizeInBytes / 1024)  // MB→KB
+        else -> (sizeInBytes / 1024)  // GB→KB
+    }
+}
+
+fun formatTimestamp(timestamp: Long): String {
+    val sdf = SimpleDateFormat("MMM dd, yyyy hh:mm:ss a", Locale.US)
+    sdf.timeZone = TimeZone.getDefault()
+    return sdf.format(Date(timestamp))
+}
 
 
 
