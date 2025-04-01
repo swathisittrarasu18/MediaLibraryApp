@@ -12,8 +12,6 @@ import com.example.medialibraryapp.ui.theme.backgroundColorDark
 import com.example.medialibraryapp.ui.theme.backgroundColorLight
 import com.example.medialibraryapp.ui.theme.headingTextColorDark
 import com.example.medialibraryapp.ui.theme.headingTextColorLight
-import com.example.medialibraryapp.ui.theme.hyperlinkTextColorDark
-import com.example.medialibraryapp.ui.theme.hyperlinkTextColorLight
 import com.example.medialibraryapp.ui.theme.imageDescriptionTextDark
 import com.example.medialibraryapp.ui.theme.imageDescriptionTextLight
 
