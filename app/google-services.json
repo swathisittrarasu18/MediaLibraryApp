@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "576211111996",
+    "project_id": "mediasampleapp",
+    "storage_bucket": "mediasampleapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576211111996:android:0301a69dcfa6e750b97339",
+        "android_client_info": {
+          "package_name": "com.example.medialibraryapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBySN9uBDIbkJsWjkoo9eaejuGnvlqWgww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
